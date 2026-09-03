@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розклад занять</title>
+    <style>
+        :root {
+            --background-color: #121212;
+            --text-color: #E0E0E0;
+            --secondary-text-color: #A0A0A0;
+            --card-background: #1E1E1E;
+            --accent-color: #BB86FC;
+            --border-color: #2C2C2C;
+            --hover-color: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #week-status {
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: var(--text-color);
+        }
+
+        .week-selector {
+            margin-top: 5px;
+        }
+
+        .week-selector button {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            color: var(--secondary-text-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        .week-selector button.active,
+        .week-selector button:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+
+        .day-navigation {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .day-navigation button {
+            background: none;
+            border: none;
+            color: var(--secondary-text-color);
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .day-navigation button.active,
+        .day-navigation button:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+
+        .schedule-day {
+            display: none;
+        }
+
+        .schedule-day.active {
+            display: block;
+        }
+
+        .schedule-item {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .schedule-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .time {
+            font-size: 1.2em;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subject {
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .details {
+            margin-top: 10px;
+            color: var(--secondary-text-color);
+            line-height: 1.6;
+        }
+
+        .details a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .details a:hover {
+            text-decoration: underline;
+        }
+
+        .schedule-item.past {
+            opacity: 0.4;
+            filter: grayscale(70%);
+        }
+        
+        body:not(.is-odd-week) .schedule-item[data-week="odd"],
+        body:not(.is-even-week) .schedule-item[data-week="even"] {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .day-navigation { flex-direction: column; padding: 5px; }
+            .day-navigation button { width: 100%; margin: 5px 0; }
+            .week-selector { flex-direction: column; width: 100%; }
+            .week-selector button { width: 100%; margin: 5px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Розклад занять</h1>
+            <div class="header-content">
+                <p id="week-status">Тиждень: </p>
+                <div class="week-selector">
+                    <button id="btn-odd" onclick="setWeekDisplay('odd')">Непарний</button>
+                    <button id="btn-even" onclick="setWeekDisplay('even')">Парний</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="day-navigation">
+            <button onclick="showDay('monday')">Понеділок</button>
+            <button onclick="showDay('tuesday')">Вівторок</button>
+            <button onclick="showDay('wednesday')">Середа</button>
+            <button onclick="showDay('thursday')">Четвер</button>
+            <button onclick="showDay('friday')">П'ятниця</button>
+        </nav>
+
+        <main>
+            <!-- Понеділок -->
+            <section id="monday" class="schedule-day">
+                <h2>Понеділок</h2>
+                <div class="schedule-item" data-week="odd">
+                    <div class="time">8:30 – 9:50</div>
+                    <p class="subject">Мережеві електронні комунікації</p>
+                    <div class="details">
+                        <p>Викладач: Бурлака Г. І.</p>
+                        <p>ID: 417 150 8049 | Код: t8J36S</p>
+                        <a href="https://us05web.zoom.us/j/4171508049?pwd=VzM1ODdBb1dnOXdwNzY4bGNhOUxnUT09&omn=89217199892" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">10:00 – 11:20</div>
+                    <p class="subject">Мережеві електронні комунікації</p>
+                    <div class="details">
+                        <p>Викладач: Бурлака Г. І.</p>
+                        <p>ID: 417 150 8049 | Код: t8J36S</p>
+                        <a href="https://us05web.zoom.us/j/4171508049?pwd=VzM1ODdBb1dnOXdwNzY4bGNhOUxnUT09&omn=89217199892" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:50 – 13:10</div>
+                    <p class="subject">Мережеві електронні комунікації</p>
+                    <div class="details">
+                        <p>Викладач: Бурлака Г. І.</p>
+                        <p>ID: 417 150 8049 | Код: t8J36S</p>
+                        <a href="https://us05web.zoom.us/j/4171508049?pwd=VzM1ODdBb1dnOXdwNzY4bGNhOUxnUT09&omn=89217199892" target="_blank">Zoom</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Вівторок -->
+            <section id="tuesday" class="schedule-day">
+                <h2>Вівторок</h2>
+                <div class="schedule-item">
+                    <div class="time">10:00 – 11:20</div>
+                    <p class="subject">Телекомунікаційні технології</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:50 – 13:10</div>
+                    <p class="subject">Супутникові системи</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">13:20 – 14:40</div>
+                    <p class="subject">Захист інформації та кібербезпека</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Середа -->
+            <section id="wednesday" class="schedule-day">
+                <h2>Середа</h2>
+                <div class="schedule-item">
+                    <div class="time">10:00 – 11:20</div>
+                    <p class="subject">Супутникові системи</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:50 – 13:10</div>
+                    <p class="subject">Телекомунікаційні технології</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item" data-week="even">
+                    <div class="time">13:20 – 14:40</div>
+                    <p class="subject">Економіка галузі</p>
+                    <div class="details">
+                        <p>Викладачі: Дурбалова Н. І.</p>
+                        <p>ID: 708 417 0123 | Код: 5678</p>
+                        <a href="https://us02web.zoom.us/j/7084170123?pwd=QWVGYjRDdTZPeVljbzVZczBkc3EzUT09" target="_blank">Zoom</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Четвер -->
+            <section id="thursday" class="schedule-day">
+                <h2>Четвер</h2>
+                <div class="schedule-item">
+                    <div class="time">10:00 – 11:20</div>
+                    <p class="subject">Економіка галузі</p>
+                    <div class="details">
+                        <p>Викладачі: Дурбалова Н. І.</p>
+                        <p>ID: 708 417 0123 | Код: 5678</p>
+                        <a href="https://us02web.zoom.us/j/7084170123?pwd=QWVGYjRDdTZPeVljbzVZczBkc3EzUT09" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">11:50 – 13:10</div>
+                    <p class="subject">Хмарні технології</p>
+                    <div class="details">
+                        <p>Викладачі: Співачевський В. Г.</p>
+                        <p>ID: 741 3266 4562 | Код: 0tjDwi</p>
+                        <a href="https://us04web.zoom.us/j/74132664562?pwd=1Roe8Io89yahWFurJmI64XhoHIR3EE.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- П'ятниця -->
+            <section id="friday" class="schedule-day">
+                <h2>П'ятниця</h2>
+                <div class="schedule-item">
+                    <div class="time">8:30 – 9:50</div>
+                    <p class="subject">Телекомунікаційні технології</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item">
+                    <div class="time">10:00 – 11:20</div>
+                    <p class="subject">Супутникові системи</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item" data-week="odd">
+                    <div class="time">11:50 – 13:10</div>
+                    <p class="subject">Захист інформації та кібербезпека</p>
+                    <div class="details">
+                        <p>Викладачі: Чебан К. В.</p>
+                        <p>ID: 875 3846 4007 | Код: 9ak9RF</p>
+                        <a href="https://us05web.zoom.us/j/87538464007?pwd=I1eOPyXLmgs9jXuEBRqOvbkRO0Z5Na.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+                <div class="schedule-item" data-week="odd"> 
+                    <div class="time">13:20 – 14:40</div>
+                    <p class="subject">Хмарні технології</p>
+                    <div class="details">
+                        <p>Викладачі: Співачевський В. Г.</p>
+                        <p>ID: 741 3266 4562 | Код: 0tjDwi</p>
+                        <a href="https://us04web.zoom.us/j/74132664562?pwd=1Roe8Io89yahWFurJmI64XhoHIR3EE.1" target="_blank">Zoom</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function showDay(dayId) {
+            document.querySelectorAll('.schedule-day').forEach(day => day.classList.remove('active'));
+            document.querySelectorAll('.day-navigation button').forEach(button => button.classList.remove('active'));
+            const selectedDay = document.getElementById(dayId);
+            if (selectedDay) selectedDay.classList.add('active');
+            const activeButton = document.querySelector(`.day-navigation button[onclick="showDay('${dayId}')"]`);
+            if (activeButton) activeButton.classList.add('active');
+        }
+
+        const getWeekStatus = () => {
+            const startDate = new Date('2026-08-31T00:00:00'); 
+            const now = new Date();
+            const getMonday = (d) => {
+                d = new Date(d);
+                const day = d.getDay();
+                const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+                return new Date(d.setDate(diff));
+            };
+            const startMonday = getMonday(startDate);
+            const nowMonday = getMonday(now);
+            const weekDiff = Math.floor((nowMonday - startMonday) / (1000 * 60 * 60 * 24 * 7));
+            const weekNumber = Math.max(1, weekDiff + 1);
+            return { 
+                weekNumber: weekNumber,
+                isEven: weekNumber % 2 === 0 
+            };
+        };
+
+        const currentWeekInfo = getWeekStatus();
+
+        function setWeekDisplay(type) {
+            const body = document.body;
+            const weekStatus = document.getElementById('week-status');
+            const btnOdd = document.getElementById('btn-odd');
+            const btnEven = document.getElementById('btn-even');
+            
+            body.classList.remove('is-odd-week', 'is-even-week');
+            btnOdd.classList.remove('active');
+            btnEven.classList.remove('active');
+            
+            const weekTypeLabel = type === 'odd' ? 'непарний' : 'парний';
+            weekStatus.textContent = `Тиждень: ${weekTypeLabel} (${currentWeekInfo.weekNumber}-й тиждень)`;
+
+            if (type === 'odd') {
+                body.classList.add('is-odd-week');
+                btnOdd.classList.add('active');
+            } else if (type === 'even') {
+                body.classList.add('is-even-week');
+                btnEven.classList.add('active');
+            }
+        }
+
+        setWeekDisplay(currentWeekInfo.isEven ? 'even' : 'odd');
+
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const todayIndex = new Date().getDay();
+        const initialDay = (todayIndex === 0 || todayIndex === 6) ? 'monday' : days[todayIndex];
+        showDay(initialDay);
+
+        function markPastClasses() {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const todayId = days[now.getDay()];
+
+            document.querySelectorAll('.schedule-day').forEach(day => {
+                const isToday = day.id === todayId;
+                
+                day.querySelectorAll('.schedule-item').forEach(item => {
+                    if (!isToday) {
+                        item.classList.remove('past');
+                        return;
+                    }
+
+                    const timeText = item.querySelector('.time').textContent;
+                    const endTimeStr = timeText.split('–')[1].trim();
+                    const [endH, endM] = endTimeStr.split(':').map(Number);
+                    const endMinutes = endH * 60 + endM;
+
+                    if (currentMinutes >= endMinutes) {
+                        item.classList.add('past');
+                    } else {
+                        item.classList.remove('past');
+                    }
+                });
+            });
+        }
+        markPastClasses();
+    </script>
+</body>
+</html>
